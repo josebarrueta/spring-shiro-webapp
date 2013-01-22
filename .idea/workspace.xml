@@ -6,14 +6,12 @@
     </artifacts-to-build>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="42f7d680-8483-4f00-8320-ab25b2b6f19d" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sample-webapp.iml" afterPath="$PROJECT_DIR$/sample-webapp.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/artifacts/sample_webapp_war_exploded.xml" afterPath="$PROJECT_DIR$/.idea/artifacts/sample_webapp_war_exploded.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/vcs.xml" afterPath="$PROJECT_DIR$/.idea/vcs.xml" />
+    <list default="true" id="42f7d680-8483-4f00-8320-ab25b2b6f19d" name="Default" comment="Second drop for project.">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="sample-webapp.iws" />
     <ignored path=".idea/workspace.xml" />
+    <ignored path=".idea/" />
     <file path="/pom.xml" changelist="42f7d680-8483-4f00-8320-ab25b2b6f19d" time="1358837679107" ignored="false" />
     <file path="/a.dummy" changelist="42f7d680-8483-4f00-8320-ab25b2b6f19d" time="1358730761702" ignored="false" />
     <file path="/LoginService.java" changelist="42f7d680-8483-4f00-8320-ab25b2b6f19d" time="1358746441170" ignored="false" />
@@ -35,7 +33,7 @@
     <file path="/application-context.xml" changelist="42f7d680-8483-4f00-8320-ab25b2b6f19d" time="1358839095553" ignored="false" />
     <file path="/home.jsp" changelist="42f7d680-8483-4f00-8320-ab25b2b6f19d" time="1358833625308" ignored="false" />
     <file path="/styles.css" changelist="42f7d680-8483-4f00-8320-ab25b2b6f19d" time="1358839820792" ignored="false" />
-    <file path="/Dummy.txt" changelist="42f7d680-8483-4f00-8320-ab25b2b6f19d" time="1358840153983" ignored="false" />
+    <file path="/Dummy.txt" changelist="42f7d680-8483-4f00-8320-ab25b2b6f19d" time="1358840535624" ignored="false" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -419,6 +417,7 @@
     <property name="recentsLimit" value="5" />
     <property name="options.lastSelected" value="project.propVCSSupport.Mappings" />
     <property name="MemberChooser.sorted" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/.idea" />
     <property name="MemberChooser.copyJavadoc" value="false" />
     <property name="GoToClass.includeJavaFiles" value="false" />
     <property name="GoToClass.toSaveIncludeLibraries" value="false" />
@@ -682,7 +681,15 @@
       <created>1358840144540</created>
       <updated>1358840144540</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Second drop for project.">
+      <created>1358840408235</created>
+      <updated>1358840408235</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Second drop for project.">
+      <created>1358840470114</created>
+      <updated>1358840470114</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="ToolWindowManager">
