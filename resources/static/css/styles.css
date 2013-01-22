@@ -1,0 +1,17 @@
+
+body{
+    font-size: 14px;
+}
+
+.title{
+    font-size: 20px;
+    margin: 15px;
+}
+
+.form{
+    margin: 0px 15px;
+}
+
+.form div{
+    margin-bottom: 10px;
+}
