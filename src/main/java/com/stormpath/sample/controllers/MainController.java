@@ -2,6 +2,7 @@ package com.stormpath.sample.controllers;
 
 import com.stormpath.sample.service.LoginService;
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
@@ -37,13 +41,18 @@ public class MainController {
 
     @RequestMapping(value = "/home", method = RequestMethod.GET)
     public ModelAndView showHome(){
+        Subject currentUser = SecurityUtils.getSubject();
 
-        if(SecurityUtils.getSubject().isAuthenticated()){
+        if(currentUser.isAuthenticated()){
             logger.info("Entered to home page. User is authenticated.");
-            return  new ModelAndView("home");
+            Map<String,Object> model = new HashMap<String, Object>();
+
+            model.put("isAdmin", currentUser.hasRole("admin")) ;
+            model.put("isUser", currentUser.hasRole("user"));
+            return new ModelAndView("home", model);
         }
         else{
-            logger.error("Unathenticated user tried to access home page.");
+            logger.error("Not authenticated user tried to access home page.");
             return new ModelAndView("redirect:/login");
         }
 

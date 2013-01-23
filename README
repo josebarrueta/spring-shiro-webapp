@@ -1,11 +1,31 @@
 Sample-WebApp project 
 
-This is a sample project to test spring/shiro/stormpath integration. 
+This is a sample project to integrate a web application .
 
-deploy:
-
-TBD
 
 build:
 
-TBD
+mvn install
+
+The instruction above will generate the: sample-webapp-1.0-SNAPSHOT.war which can be deployed
+in a tomcat server.
+
+Setup instructions:
+
+- Open an stormpath account.
+- Get your API keys and place the file in a secure location. See http://www.stormpath.com/docs/get-api-key
+- Register an application. See http://www.stormpath.com/docs/quickstart/register-app
+- Create accounts for the created applications and assign them roles (e.g. admin or user).
+- Create a properties file that will have at least the following two properties:
+
+stormpath.apikey.location=<location of the apiKeys properties file>
+stormpath.application.resturl=<REST URL of the stormpath application>
+
+In the application-context.xml file (under src/amin/webapp/WEB-INF/spring) replace the
+${stormpathPropertiesFileLocation} in PropertyPlaceholderConfigurer to point to the location of the
+properties file in your local environment.
+
+
+TODO: Create templates using tiles.
+TODO: Add support to create users.
+
