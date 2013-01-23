@@ -7,9 +7,7 @@
 
     <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
         <property name="location">
-            <!--<value>file:${stormpathPropertiesFileLocation}</value>-->
-            <value>file:/Users/jbarrueta/stormpath/.properties/sample-webapp.properties</value>
-
+            <value>file:${stormpathPropertiesFileLocation}</value>
         </property>
     </bean>
 
