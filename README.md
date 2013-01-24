@@ -2,15 +2,16 @@ Sample-WebApp project
 
 This is a sample project to integrate a web application .
 
+This project is open-source via the [Apache 2.0 License](http://www.apache.org/licenses/LICENSE-2.0).
 
-build:
+### Build Instructions ###
 
-mvn install
+This project requires Maven 3.0.3 to build.  Run the following:
 
-The instruction above will generate the: sample-webapp-1.0-SNAPSHOT.war which can be deployed
-in a tomcat server.
+`> mvn install`
 
-Setup instructions:
+
+### Setup instructions ###
 
 - Open an stormpath account.
 - Get your API keys and place the file in a secure location. See http://www.stormpath.com/docs/get-api-key
@@ -25,7 +26,13 @@ In the application-context.xml file (under src/amin/webapp/WEB-INF/spring) repla
 ${stormpathPropertiesFileLocation} in PropertyPlaceholderConfigurer to point to the location of the
 properties file in your local environment.
 
+TODO: Logout
+TODO: Add support to create users.
+TODO: Enable shiro annotations.
+
+TODO: Create unit tests.
 
 TODO: Create templates using tiles.
-TODO: Add support to create users.
+TODO: Document classes.
+
 

@@ -99,7 +99,7 @@
 
         <dependency>
             <groupId>org.apache.shiro</groupId>
-            <artifactId>shiro-spring</artifactId>
+            <artifactId>shiro-aspectj</artifactId>
             <version>${shiro.version}</version>
         </dependency>
 

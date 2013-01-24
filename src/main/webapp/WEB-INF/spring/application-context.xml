@@ -6,9 +6,7 @@
 
 
     <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-        <property name="location">
-            <value>file:${stormpathPropertiesFileLocation}</value>
-        </property>
+        <property name="location" value="file:/Users/jbarrueta/stormpath/.properties/sample-webapp.properties"/>
     </bean>
 
     <!-- Stormpath SDK Client configuration     -->
@@ -21,6 +19,7 @@
         <property name="targetMethod" value="build"/>
     </bean>
 
+    <!-- Roles permission resolver -->
     <bean id="stormpathGroupRoleResolver" class="com.stormpath.shiro.realm.DefaultGroupRoleResolver">
         <property name="modeNames">
             <set>
@@ -31,6 +30,7 @@
         </property>
     </bean>
 
+    <!-- stormpath realm to be used by shiro to authenticate and authorize -->
     <bean id="stormpathRealm"  class="com.stormpath.shiro.realm.ApplicationRealm">
         <property name="client" ref="stormpathClient"/>
         <property name="applicationRestUrl" value="${stormpath.application.resturl}"/>
@@ -56,11 +56,17 @@
                 /static/** = anon
                 /index.jsp = anon
                 /favicon.ico = anon
-                /admin/** = authc, roles[admin]
-                /docs/** = authc, perms[document:read]
+                /login = anon
+                /admin/** = authc , roles[admin]
                 /** = authc
             </value>
         </property>
+    </bean>
+
+    <!-- Enable Shiro Annotations for Spring-configured beans. -->
+    <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator" depends-on="lifecycleBeanPostProcessor"/>
+    <bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+        <property name="securityManager" ref="securityManager"/>
     </bean>
 
     <bean id="loginService" class="com.stormpath.sample.impl.LoginServiceImpl"/>
