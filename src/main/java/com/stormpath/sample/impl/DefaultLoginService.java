@@ -29,8 +29,6 @@ public class DefaultLoginService implements LoginService {
             try {
                 currentUser.login(token);
                 token.setRememberMe(rememberMe);
-
-                logger.info("Current user: " + currentUser.getPrincipal());
             } catch ( UnknownAccountException uae ) {
                 throw new AuthenticationException("UnknownAccountException occurred.", uae);
             } catch ( IncorrectCredentialsException ice ) {

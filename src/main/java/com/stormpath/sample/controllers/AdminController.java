@@ -1,11 +1,11 @@
 package com.stormpath.sample.controllers;
 
+import com.stormpath.sample.model.DefaultAccount;
 import com.stormpath.sample.service.AccountService;
-import com.stormpath.sdk.account.Account;
-import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
@@ -30,8 +30,9 @@ public class AdminController {
     }
 
     @RequestMapping(value = "/createUser", method = RequestMethod.POST)
-    public ModelAndView createUser(){
-        Account account = accountService.createAccount();
+    public ModelAndView createUser(@ModelAttribute("account") DefaultAccount account){
+
+        accountService.createAccount(account);
         return new ModelAndView("redirect:/accounts");
     }
 }

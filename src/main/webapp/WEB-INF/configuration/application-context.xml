@@ -60,6 +60,7 @@
         <property name="securityManager" ref="securityManager"/>
         <property name="loginUrl" value="/login"/>
         <property name="successUrl" value="/home"/>
+        <property name="unauthorizedUrl" value="/unauthorized"/>
 
         <property name="filterChainDefinitions">
             <value>
@@ -67,7 +68,9 @@
                 /error/** = anon
                 /favicon.ico = anon
                 /login = anon
+                /home = anon <!-- setup this way to use the shiro subject methods for checking authenticated users. -->
                 /admin/** = authc
+                /logout = logout
                 /** = authc
             </value>
         </property>

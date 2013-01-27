@@ -1,38 +1,23 @@
 Sample-WebApp project 
 
-This is a sample project to integrate a web application .
+This is a sample project to integrate a web application with [Stormpath](http://www.stormpath.com) and [Apache Shiro](http://shiro.apache.org/)
 
 This project is open-source via the [Apache 2.0 License](http://www.apache.org/licenses/LICENSE-2.0).
 
 ### Build Instructions ###
 
-This project requires Maven 3.0.3 to build.  Run the following:
+This project requires Maven 3.0.4 to build.  Run the following:
 
 `> mvn install`
 
+### Requirements ###
 
-### Setup instructions ###
+- Open an [Stormpath account](http://www.stormpath.com) .
+- Get your API keys and place the file in a secure location. See [http://www.stormpath.com/docs/get-api-key](how to get your API key).
+- Register an application. See [http://www.stormpath.com/docs/quickstart/register-app](how to register an application)
+- Create groups (roles) in the new directory to assign them to new accounts. Used roles in this project are: admin and user.
+- Create accounts for the created applications and assign them roles (i.e. admin or user).
 
-- Open an stormpath account.
-- Get your API keys and place the file in a secure location. See http://www.stormpath.com/docs/get-api-key
-- Register an application. See http://www.stormpath.com/docs/quickstart/register-app
-- Create accounts for the created applications and assign them roles (e.g. admin or user).
-- Create a properties file that will have at least the following two properties:
-
-stormpath.apikey.location=<location of the apiKeys properties file>
-stormpath.application.resturl=<REST URL of the stormpath application>
-
-In the application-context.xml file (under src/amin/webapp/WEB-INF/spring) replace the
-${stormpathPropertiesFileLocation} in PropertyPlaceholderConfigurer to point to the location of the
-properties file in your local environment.
-
-TODO: Logout
-TODO: Add support to create users.
-TODO: Enable shiro annotations.
-
-TODO: Create unit tests.
-
-TODO: Create templates using tiles.
-TODO: Document classes.
+More on setup and running? See project [wiki](https://github.com/josebarrueta/spring-shiro-webapp/wiki)
 
 

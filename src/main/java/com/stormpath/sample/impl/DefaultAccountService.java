@@ -1,14 +1,14 @@
 package com.stormpath.sample.impl;
 
+import com.stormpath.sample.model.DefaultAccount;
 import com.stormpath.sample.service.AccountService;
 import com.stormpath.sdk.account.Account;
 import com.stormpath.sdk.account.AccountList;
 import com.stormpath.sdk.client.Client;
+import com.stormpath.sdk.directory.Directory;
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -29,26 +29,46 @@ public class DefaultAccountService implements AccountService{
     private Client stormpathClient;
 
     @Override
-    public Account createAccount() {
-        return null;
+    public void createAccount(DefaultAccount newAccount) {
+
+        Subject currentUser = SecurityUtils.getSubject();
+        String accountHref = currentUser.getPrincipal().toString();
+
+        Account account = stormpathClient.getDataStore().getResource(accountHref,Account.class);
+
+        Directory directory = account.getDirectory();
+
+        Account sdkAccount = stormpathClient.getDataStore().instantiate(Account.class);
+        sdkAccount.setEmail(newAccount.getEmail());
+        sdkAccount.setUsername(newAccount.getUsername());
+        sdkAccount.setGivenName(newAccount.getGivenName());
+        sdkAccount.setPassword(newAccount.getPassword());
+        sdkAccount.setSurname(newAccount.getSurname());
+
+        directory.createAccount(sdkAccount);
     }
 
     @Override
-    public List<Account> getAccounts() {
+    public List<DefaultAccount> getAccounts() {
         Subject currentUser = SecurityUtils.getSubject();
 
         String accountHref = currentUser.getPrincipal().toString();
 
-        Account account = stormpathClient.getDataStore().getResource(accountHref, Account.class);
+        Account sdkAccount = stormpathClient.getDataStore().getResource(accountHref,Account.class);
+        AccountList accountList = sdkAccount.getDirectory().getAccounts();
 
-        AccountList accountList = account.getDirectory().getAccounts();
-
-        List<Account> accountsToRetrieve ;
+        List<DefaultAccount> accountsToRetrieve ;
 
         if(accountList != null){
-            accountsToRetrieve = new ArrayList<Account>();
+            accountsToRetrieve = new ArrayList<DefaultAccount>();
             for(Account acct : accountList){
-                accountsToRetrieve.add(acct);
+                DefaultAccount dfAcct = new DefaultAccount();
+                dfAcct.setEmail(acct.getEmail());
+                dfAcct.setGivenName(acct.getGivenName());
+                dfAcct.setUsername(acct.getUsername());
+                dfAcct.setSurname(acct.getSurname());
+                dfAcct.setStatus(acct.getStatus().name().toLowerCase());
+                accountsToRetrieve.add(dfAcct);
             }
         }
         else {

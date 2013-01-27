@@ -1,7 +1,7 @@
 package com.stormpath.sample.controllers;
 
+import com.stormpath.sample.model.DefaultAccount;
 import com.stormpath.sample.service.AccountService;
-import com.stormpath.sdk.account.Account;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresRoles;
@@ -32,13 +32,23 @@ public class MainController {
     @Autowired
     private AccountService accountService;
 
+
+    /**
+     * URI for accessing the "home" page of the web application.
+     *
+     * Sample usages of isAuthenticated or isRemembered methods from {@link org.apache.shiro.subject.Subject}
+     * can be seen here.
+     *
+     * Instead of forcing the authc filter on this resource, we handle the validation of the user in this method. Just
+     * to show shiro tools for this.
+     *
+     * @return
+     */
     @RequestMapping(value = "/home", method = RequestMethod.GET)
-    @RequiresRoles(value = {"user","admin"}, logical = Logical.OR)
     public ModelAndView getHome() {
         Subject currentUser = SecurityUtils.getSubject();
-
-        if (currentUser.isAuthenticated()) {
-            logger.info(String.format("Current user info [%s]", currentUser.getPrincipal().toString()));
+        if (currentUser.isAuthenticated() || currentUser.isRemembered()) {
+            logger.info(String.format("home - current user info [%s]", currentUser.getPrincipal().toString()));
             return new ModelAndView("home");
         } else {
             logger.error("Not authenticated user tried to access home page.");
@@ -47,10 +57,20 @@ public class MainController {
 
     }
 
+    /**
+     * URI for getting the list of accounts that exist on the authenticated user's directory.
+     *
+     * Important to see here is the usage for {@link org.apache.shiro.authz.annotation.RequiresRoles} and
+     * {@link org.apache.shiro.authz.annotation.Logical} annotations of Apache Shiro, in this case accounts
+     * the are set with either "admin" OR "user" can access the "/accounts" resource.
+     *
+     * @return
+     */
     @RequestMapping(value = "/accounts", method = RequestMethod.GET)
     @RequiresRoles(value = {"user","admin"}, logical = Logical.OR)
     public ModelAndView getAccounts() {
-        List<Account> accountsToRetrieve =  accountService.getAccounts();
+        List<DefaultAccount> accountsToRetrieve =  accountService.getAccounts();
+
         logger.info(String.format("Found [%d] accounts in the application.", accountsToRetrieve.size()));
 
         Map<String,Object> model = new HashMap<String, Object>();

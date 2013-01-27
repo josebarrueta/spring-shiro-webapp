@@ -1,18 +1,19 @@
 package com.stormpath.sample.service;
 
-import com.stormpath.sdk.account.Account;
+import com.stormpath.sample.model.DefaultAccount;
 
 import java.util.List;
+import java.util.Map;
 
 /**
- * Interface AccountService is used for...
+ * AccountService is the interface used to get and create accounts.
  *
  * @author josebarrueta
  * @since 1/25/13
  */
 public interface AccountService {
 
-    Account createAccount();
+    void createAccount(DefaultAccount account);
 
-    List<Account> getAccounts();
+    List<DefaultAccount> getAccounts();
 }

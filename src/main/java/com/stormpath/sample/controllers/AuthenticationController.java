@@ -50,13 +50,20 @@ public class AuthenticationController {
         return new ModelAndView("redirect:/home");
     }
 
-    @RequestMapping(value = "logout", method = RequestMethod.GET)
+    @RequestMapping(value = "/logout", method = RequestMethod.GET)
     public ModelAndView logout(){
         Subject currentSubject = SecurityUtils.getSubject();
+
         if(currentSubject.isAuthenticated() || currentSubject.isRemembered()){
+            logger.info(String.format("User [%s] is logging out from the app.", currentSubject.getPrincipal()));
             currentSubject.logout();
         }
         return new ModelAndView("redirect:/login");
+    }
+
+    @RequestMapping(value = "/unauthorized", method = RequestMethod.GET)
+    public ModelAndView unauthorized(){
+        return new ModelAndView("error403");
     }
 
 }

@@ -8,7 +8,7 @@
     <thead>
     <tr>
         <td>Username</td>
-        <td>Name</td>
+        <td>Full name</td>
         <td>Email</td>
         <td>Status</td>
     </tr>
