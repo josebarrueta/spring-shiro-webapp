@@ -11,7 +11,7 @@ import org.apache.shiro.subject.Subject;
  * Date: 1/18/13
  * Time: 8:04 PM
  */
-public class LoginServiceImpl implements LoginService {
+public class DefaultLoginService implements LoginService {
 
     @Override
     public void doLogin(String username, String password, boolean rememberMe) throws Exception{
