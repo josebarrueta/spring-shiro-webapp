@@ -11,11 +11,12 @@
        http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">
 
     <context:component-scan base-package="com.stormpath.sample.controllers" />
+    <context:component-scan base-package="com.stormpath.sample.impl" />
 
     <mvc:annotation-driven/>
 
     <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-        <property name="location" value="file:/Users/jbarrueta/stormpath/.properties/sample-webapp.properties"/>
+        <property name="location" value="file:${stormpathPropertiesFileLocation}"/>
     </bean>
 
     <!-- Stormpath SDK Client configuration     -->
@@ -64,7 +65,6 @@
             <value>
                 /static/** = anon
                 /error/** = anon
-                /index.jsp = anon
                 /favicon.ico = anon
                 /login = anon
                 /admin/** = authc
@@ -73,8 +73,8 @@
         </property>
     </bean>
 
-    <bean id="accountService" class="com.stormpath.sample.impl.DefaultAccountService"/>
-    <bean id="loginService" class="com.stormpath.sample.impl.DefaultLoginService"/>
+    <!--bean id="accountService" class="com.stormpath.sample.impl.DefaultAccountService"/>
+    <bean id="loginService" class="com.stormpath.sample.impl.DefaultLoginService"/-->
 
     <!-- Enable Shiro Annotations for Spring-configured beans. -->
     <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator" depends-on="lifecycleBeanPostProcessor"/>
@@ -86,10 +86,10 @@
     <bean class="com.stormpath.sample.resolvers.SampleSimpleExceptionResolver">
         <property name="exceptionMappings">
             <props>
-                <prop key="org.apache.shiro.authz.AuthorizationException">/error/403</prop>
+                <prop key="org.apache.shiro.authz.AuthorizationException">error403</prop>
             </props>
         </property>
-        <property name="defaultErrorView" value="/error/500"/>
+        <property name="defaultErrorView" value="error500"/>
     </bean>
 
 

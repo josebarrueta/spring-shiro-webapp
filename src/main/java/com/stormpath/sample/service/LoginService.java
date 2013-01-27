@@ -1,16 +1,15 @@
 package com.stormpath.sample.service;
 
 /**
- * Created with IntelliJ IDEA.
- * User: jbarrueta
- * Date: 12/27/12
- * Time: 9:13 AM
+ *
+ * @author josebarrueta
+ * @since 1/18/2013
  *
  */
 public interface LoginService {
 
     /**
-     * Service to provide login feature.
+     * log in action to authenticate a user.
      *
      * @param username
      * @param password

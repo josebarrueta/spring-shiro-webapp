@@ -2,22 +2,28 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
 
-<html>
-<head>
-    <title>Sample Webapp - Create user</title>
-    <link rel="stylesheet" type="text/css" href="/static/css/styles.css" media="screen" />
-</head>
+<div class="title">Create a account in the cloud!</div>
 
-<body>
-    Hello,
+<div class="form">
+    <form method="POST">
+        <div class="inputForm">
+            <span>Username: </span> <input type="text" name="username" value="" maxlength="100"/>
+        </div>
+        <div class="inputForm">
+            <span>First Name: </span> <input type="text" name="givenName" value="" maxlength="100"/>
+        </div>
+        <div class="inputForm">
+            <span>Last Name: </span> <input type="text" name="surname" value="" maxlength="100"/>
+        </div>
+        <div class="inputForm">
+            <span>Email: </span> <input type="text" name="email" value="" maxlength="100"/>
+        </div>
+        <div class="inputForm">
+            <span>Password: </span> <input type="password" name="password" value="" maxlength="100"/>
+        </div>
+        <input type="submit" class="button">
+    </form>
+</div>
 
-    <div class="form">
-        <form method="POST">
-            <div class="inputForm">
-                <span>username: </span> <input type="text" name="username" value="" maxlength="50"/>
-            </div>
-            <input type="submit">
-        </form>
-    </div>
-</body>
-</html>
+
+<div class="returnAction">Return to <a href="/home">home</a> to continue working.</div>

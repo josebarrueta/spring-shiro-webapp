@@ -1,19 +1,63 @@
 
 body{
-    font-size: 14px;
+    font-family: Verdana, arial, helvetica, sans-serif;
+    font-size: 13px;
+    background-color: #e0ffff;
+}
+
+.mainHeader{
+    height: 90px;
+    border-bottom: 1px solid gray;
+    margin-bottom: 30px;
+}
+
+.mainHeader .sign{
+    float: right;
+    padding-right: 20px;
+    padding-top: 35px;
+}
+
+.mainBody{
+    margin: 0px 35px;
 }
 
 .title{
     font-size: 20px;
-    margin: 15px;
+    margin-bottom: 20px;
 }
 
-.form{
-    margin: 0px 15px;
+.mainFooter{
+    border-top: 1px solid gray;
+    position:absolute;
+    bottom:0;
+    height:100px;
+    width: 99%;
+}
+
+.userAction{
+    margin-bottom: 20px;
+}
+
+.returnAction{
+    font-size: 13px;
+    margin-top: 20px;
 }
 
 .form div{
     margin-bottom: 10px;
+}
+
+.button {
+    border: 1px solid #006;
+    background-color: #d3d3d3;
+}
+
+.button :hover {
+    background-color: gray;
+}
+
+.inputForm{
+    margin: 10px 10px 10px 0px;
 }
 
 .accounts {
@@ -23,4 +67,34 @@ body{
 
 .accounts thead{
     font-weight: bold;
+}
+
+.accounts thead tr{
+    border-bottom: 1px #708090 solid;
+}
+
+.accounts tbody td{
+    font-size: 12px;
+}
+
+.accounts td{
+    padding: 5px 5px;
+}
+
+.errorCode{
+    text-align: center;
+}
+
+.errorDescription{
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+
+a, a:visited, a:active{
+    color: #6495ed;
+    text-decoration: none;
+}
+
+a:hover{
+    text-decoration: underline !important;
 }

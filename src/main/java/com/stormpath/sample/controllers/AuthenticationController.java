@@ -13,13 +13,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 /**
- * Controller that holds the authenticate URLs for the application.
+ * Controller that supports the authentication URLs for the application.
  *
  * @author josebarrueta
  *
  */
 @Controller
-@RequestMapping(value = "/login")
 public class AuthenticationController {
 
     private static final Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
@@ -27,7 +26,7 @@ public class AuthenticationController {
     @Autowired
     private LoginService loginService;
 
-    @RequestMapping(method = RequestMethod.GET)
+    @RequestMapping(value = "/login", method = RequestMethod.GET)
     public ModelAndView showLogin(){
         Subject currentSubject = SecurityUtils.getSubject();
         if(currentSubject.isAuthenticated() || currentSubject.isRemembered()){
@@ -37,7 +36,7 @@ public class AuthenticationController {
         return new ModelAndView("login");
     }
 
-    @RequestMapping(method = RequestMethod.POST)
+    @RequestMapping(value = "/login", method = RequestMethod.POST)
     public ModelAndView login(@RequestParam("username") String username,
                               @RequestParam("password") String password,
                               @RequestParam(value = "rememberMe", required = false, defaultValue = "false") String rememberMe){
@@ -49,6 +48,15 @@ public class AuthenticationController {
             return new ModelAndView("redirect:/login");
         }
         return new ModelAndView("redirect:/home");
+    }
+
+    @RequestMapping(value = "logout", method = RequestMethod.GET)
+    public ModelAndView logout(){
+        Subject currentSubject = SecurityUtils.getSubject();
+        if(currentSubject.isAuthenticated() || currentSubject.isRemembered()){
+            currentSubject.logout();
+        }
+        return new ModelAndView("redirect:/login");
     }
 
 }

@@ -1,17 +1,45 @@
-<?xml version="1.0" encoding="ISO-8859-1" ?>
-<!DOCTYPE tiles-definitions PUBLIC
-        "-//Apache Software Foundation//DTD Tiles Configuration 2.1//EN"
-        "http://tiles.apache.org/dtds/tiles-config_2_1.dtd">
+<!--?xml version="1.0" encoding="UTF-8"?-->
+<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN"
+        "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+
 <tiles-definitions>
 
-    <definition name="defaultTemplate" template="/template/template.jsp">
-        <put-attribute name="header" value="/template/header.jsp" />
-        <put-attribute name="menu" value="/template/menu.jsp" />
-        <put-attribute name="footer" value="/template/footer.jsp" />
+    <definition name="defaultLayout" template="/WEB-INF/jsp/layout/base-layout.jsp">
+        <put-attribute name="titlePostfix" value="" />
+        <put-attribute name="header" value="/WEB-INF/jsp/layout/header.jsp" />
+        <put-attribute name="body" value="" />
+        <put-attribute name="footer" value="/WEB-INF/jsp/layout/footer.jsp" />
     </definition>
 
-    <definition name="searchBook" extends="defaultTemplate">
-        <put-attribute name="body" value="/book/searchForm.jsp"/>
+    <definition name="login" extends="defaultLayout">
+        <put-attribute name="titlePostfix" value="Login" />
+        <put-attribute name="body" value="/WEB-INF/jsp/login.jsp"/>
     </definition>
+
+    <definition name="home" extends="defaultLayout">
+        <put-attribute name="titlePostfix" value="Home" />
+        <put-attribute name="body" value="/WEB-INF/jsp/home.jsp"/>
+    </definition>
+
+    <definition name="accounts" extends="defaultLayout">
+        <put-attribute name="titlePostfix" value="Accounts" />
+        <put-attribute name="body" value="/WEB-INF/jsp/accounts.jsp"/>
+    </definition>
+
+    <definition name="createUser" extends="defaultLayout">
+        <put-attribute name="titlePostfix" value="Create User" />
+        <put-attribute name="body" value="/WEB-INF/jsp/createUser.jsp"/>
+    </definition>
+
+    <definition name="error403" extends="defaultLayout">
+        <put-attribute name="titlePostfix" value="Authorization Error" />
+        <put-attribute name="body" value="/WEB-INF/jsp/errors/403.jsp"/>
+    </definition>
+
+    <definition name="error500" extends="defaultLayout">
+        <put-attribute name="titlePostfix" value="Server Error" />
+        <put-attribute name="body" value="/WEB-INF/jsp/errors/500.jsp"/>
+    </definition>
+
 
 </tiles-definitions>

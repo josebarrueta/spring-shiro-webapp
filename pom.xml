@@ -24,6 +24,7 @@
         <org.springframework.version>3.2.0.RELEASE</org.springframework.version>
         <slf4j.version>1.6.4</slf4j.version>
         <shiro.version>1.2.1</shiro.version>
+        <apache.tiles.version>3.0.1</apache.tiles.version>
     </properties>
 
     <dependencies>
@@ -118,6 +119,13 @@
         </dependency>
 
         <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jcl-over-slf4j</artifactId>
+            <version>${slf4j.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
             <version>1.2.14</version>
@@ -131,17 +139,32 @@
             <version>1.2</version>
         </dependency>
 
-        <!--dependency>
+        <!-- Tiles dependencies -->
+        <dependency>
             <groupId>org.apache.tiles</groupId>
-            <artifactId>tiles-servlet</artifactId>
-            <version>2.2.2</version>
+            <artifactId>tiles-core</artifactId>
+            <version>${apache.tiles.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.apache.tiles</groupId>
+            <artifactId>tiles-api</artifactId>
+            <version>${apache.tiles.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.apache.tiles</groupId>
             <artifactId>tiles-jsp</artifactId>
-            <version>2.2.2</version>
-        </dependency-->
+            <version>${apache.tiles.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tiles</groupId>
+            <artifactId>tiles-servlet</artifactId>
+            <version>${apache.tiles.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tiles</groupId>
+            <artifactId>tiles-template</artifactId>
+            <version>${apache.tiles.version}</version>
+        </dependency>
     </dependencies>
 
     <build>

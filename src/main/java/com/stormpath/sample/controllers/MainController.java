@@ -1,11 +1,10 @@
 package com.stormpath.sample.controllers;
 
+import com.stormpath.sample.service.AccountService;
 import com.stormpath.sdk.account.Account;
-import com.stormpath.sdk.account.AccountList;
-import com.stormpath.sdk.client.Client;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.Logical;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,14 +14,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 
 /**
- * Main controller has the URLs accessible for regular users and admins.
+ * Main controller has the URLs accessible for regular users as well as admins.
  *
  * @author josebarrueta
  */
@@ -31,12 +29,11 @@ public class MainController {
 
     private static final Logger logger = LoggerFactory.getLogger(MainController.class);
 
-
     @Autowired
-    private Client stormpathClient;
+    private AccountService accountService;
 
     @RequestMapping(value = "/home", method = RequestMethod.GET)
-    @RequiresPermissions(value = "admin,user", logical = Logical.OR)
+    @RequiresRoles(value = {"user","admin"}, logical = Logical.OR)
     public ModelAndView getHome() {
         Subject currentUser = SecurityUtils.getSubject();
 
@@ -51,21 +48,9 @@ public class MainController {
     }
 
     @RequestMapping(value = "/accounts", method = RequestMethod.GET)
-    @RequiresPermissions(value = "admin,user", logical = Logical.OR)
+    @RequiresRoles(value = {"user","admin"}, logical = Logical.OR)
     public ModelAndView getAccounts() {
-        Subject currentUser = SecurityUtils.getSubject();
-
-        String accountHref = currentUser.getPrincipal().toString();
-
-        Account account = stormpathClient.getDataStore().getResource(accountHref, Account.class);
-
-        AccountList accountList = account.getDirectory().getAccounts();
-
-        List<Account> accountsToRetrieve = new ArrayList<Account>();
-        for(Account acct : accountList){
-            accountsToRetrieve.add(acct);
-        }
-
+        List<Account> accountsToRetrieve =  accountService.getAccounts();
         logger.info(String.format("Found [%d] accounts in the application.", accountsToRetrieve.size()));
 
         Map<String,Object> model = new HashMap<String, Object>();
