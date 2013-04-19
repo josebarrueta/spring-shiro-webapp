@@ -30,8 +30,8 @@ public class AdminController {
     }
 
     @RequestMapping(value = "/createUser", method = RequestMethod.POST)
+    @RequiresRoles(value = "admin")
     public ModelAndView createUser(@ModelAttribute("account") DefaultAccount account){
-
         accountService.createAccount(account);
         return new ModelAndView("redirect:/accounts");
     }

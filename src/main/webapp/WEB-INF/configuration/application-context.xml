@@ -3,25 +3,20 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:mvc="http://www.springframework.org/schema/mvc"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans
-       http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
        http://www.springframework.org/schema/context
-       http://www.springframework.org/schema/context/spring-context-3.0.xsd
+       http://www.springframework.org/schema/context/spring-context-3.2.xsd
        http://www.springframework.org/schema/mvc
-       http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">
+       http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd">
 
-    <context:component-scan base-package="com.stormpath.sample.controllers" />
-    <context:component-scan base-package="com.stormpath.sample.impl" />
+    <context:component-scan base-package="com.stormpath.sample.controllers, com.stormpath.sample.impl" />
 
     <mvc:annotation-driven/>
 
     <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-        <property name="location" value="file:${stormpathPropertiesFileLocation}"/>
-    </bean>
-
-    <!-- Stormpath SDK Client configuration     -->
-    <bean id="stormpathClientBuilder" class="com.stormpath.sdk.client.ClientBuilder">
-        <property name="apiKeyFileLocation" value="${stormpath.apikey.location}"/>
+        <property name="location" value="file:${defaultProperties.location}"/>
     </bean>
 
     <bean id="stormpathClient" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
@@ -95,5 +90,19 @@
         <property name="defaultErrorView" value="error500"/>
     </bean>
 
+    <beans profile="default" >
+        <!-- Stormpath SDK Client configuration     -->
+        <bean id="stormpathClientBuilder" class="com.stormpath.sdk.client.ClientBuilder" >
+            <property name="apiKeyFileLocation" value="${stormpath.apikey.location}"/>
+        </bean>
+    </beans>
+
+    <beans profile="staging">
+        <!-- Stormpath SDK Client configuration     -->
+        <bean id="stormpathClientBuilder" class="com.stormpath.sdk.client.StagingClientBuilder" >
+            <property name="apiKeyFileLocation" value="${stormpath.apikey.location}"/>
+            <property name="stagingBaseUrl" value="${stormpath.baseurl}"/>
+        </bean>
+    </beans>
 
 </beans>
