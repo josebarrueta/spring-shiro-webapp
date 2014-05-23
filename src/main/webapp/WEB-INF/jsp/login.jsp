@@ -1,19 +1,22 @@
-<%@ page contentType="text/html" language="java" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page contentType="text/html" language="java" pageEncoding="utf-8" %>
+<html ng-app="customLoginApp">
+<head>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="/assets/styles/main.css">
+</head>
+<body>
 
-<div class="title">Please enter your username and password to access the application.</div>
+    <!-- Add your site or application content here -->
+    <div class="container" ng-view=""></div>
 
-<div class="form">
-    <form method="POST">
-        <div class="inputForm">
-            <span>Username: </span> <input type="text" name="username" value="" maxlength="50"/>
-        </div>
-        <div class="inputForm">
-            <span>Password: </span> <input type="password" name="password" value="" maxlength="50"/>
-        </div>
-        <div class="inputForm">
-            <span>Remember me:</span> <input type="checkbox" name="rememberMe" value="true">
-        </div>
-        <input type="submit" value="Submit" class="button"/>
-    </form>
-</div>
+    <script src="/assets/js/lib/jquery.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.4/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.4/angular-route.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.4/angular-resource.min.js"></script>
+
+    <script src="/assets/js/app.js"></script>
+    <script src="/assets/js/lib/angular-facebook.js"></script>
+    <script src="/assets/js/controllers/login.js"></script>
+    <script src="/assets/js/controllers/signup.js"></script>
+</body>
+</html>

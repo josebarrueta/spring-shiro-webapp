@@ -2,3 +2,4 @@
 .idea/
 sample-webapp.iml
 target/
+.log

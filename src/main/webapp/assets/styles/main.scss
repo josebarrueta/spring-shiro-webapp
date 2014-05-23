@@ -1,0 +1,155 @@
+@import 'sass-bootstrap/lib/bootstrap';
+@import "compass";
+@import url('http://fonts.googleapis.com/css?family=Open+Sans');
+
+.stormpath-login-table {
+    width: 650px;
+    border-collapse: separate;
+    border: solid #ccc 1px;
+    border-radius: 6px;
+    border-left: 0px;
+    font-family: "Open Sans";
+    font-size: 14px;
+    font-weight: 400;
+
+    td.login-form, th.login-form {
+        background-color: #ffffff;
+        width: 400px;
+        padding-left: 34px;
+        padding-right: 45px;
+
+        label {
+            font-weight: 600;
+            color: #686868;
+        }
+
+        .form-group {
+            margin-bottom: 21px;
+        }
+
+        .input-lg {
+            background-color: #f7f7f7;
+        }
+
+        .row {
+            margin: 0px;
+            width: 330px;
+        }
+
+        .btn-log-in {
+            color: #ffffff;
+            background-color: #70bb5b;
+            @include background-image(linear-gradient(#70bb6b, #60b348));
+            height: 45px;
+            width: 150px;
+            margin-right: 20px;
+        }
+
+        .btn-log-in:hover {
+            @include background-image(linear-gradient(#6dc653, #5bcf40));
+        }
+    }
+
+    td.social-login, th.social-login {
+        background-color: #f6f6f6;
+        width: 250px;
+        padding-left: 31px;
+
+        .one-click-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #5e5e5e;
+            margin-bottom: 10px;
+        }
+
+        a.button-facebook,
+        a.button-google,
+        a.button-linkedin,
+        a.button-twitter {
+            border-radius: 3px;
+            box-shadow: 0 1px 1px #999;
+            color: #fff;
+            display: inline-block;
+            font-size: 14px;
+            margin: 0 20px 10px 0;
+            padding: 9px 15px;
+            text-align: center;
+            width: 187px;
+        }
+
+        a.button-facebook {
+            background-color: #4c6fc5; /* fallback color */
+            @include background-image(linear-gradient(#4c6fc5, #3d63c0));
+            border: 1px solid #4c6fc5;
+            text-shadow: 0 -1px 0 #354c8c;
+        }
+
+        a.button-facebook:hover {
+            background-color: #4773de; /* fallback color */
+            @include background-image(linear-gradient(#4773de, #3767db));
+            text-decoration: none;
+        }
+
+        a.button-google {
+            background-color: #e05b4b; /* fallback color */
+            @include background-image(linear-gradient(#e05b4b, #dd4b39));
+            border: 1px solid #e05b4b;
+            text-shadow: 0 -1px 0 #e05b4b;
+        }
+
+        a.button-google:hover {
+            background-color: #ea604e; /* fallback color */
+            @include background-image(linear-gradient(#ea604e, #e8503c));
+            text-decoration: none;
+        }
+    }
+
+    th.login-form {
+        font-size: 21px;
+        font-weight: 400;
+        padding-bottom: 0px;
+        padding-top: 36px;
+
+        a.register-link {
+            color: #1e9bee;
+        }
+    }
+
+    td.login-form {
+        padding-bottom: 36px;
+    }
+
+    thead > tr > th {
+        border-top: none;
+        border-bottom: none;
+        border-left: 1px solid #ccc;
+
+    }
+
+    tbody > tr > td {
+        border-top: none;
+        border-left: 1px solid #ccc;
+    }
+
+    th:first-child {
+        border-radius: 6px 0 0 0;
+    }
+
+    th:last-child {
+        border-radius: 0 6px 0 0;
+    }
+
+    th:only-child {
+        border-radius: 6px 6px 0 0;
+    }
+
+    tr:last-child td:first-child {
+        border-radius: 0 0 0 6px;
+    }
+
+    tr:last-child td:last-child {
+        border-radius: 0 0 6px 0;
+    }
+}
+
+

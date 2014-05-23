@@ -21,10 +21,15 @@
     </developers>
 
     <properties>
-        <org.springframework.version>3.2.0.RELEASE</org.springframework.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <org.springframework.version>4.0.3.RELEASE</org.springframework.version>
+        <stormpath.sdk.version>1.0.RC-SNAPSHOT</stormpath.sdk.version>
+        <jackson.version>2.3.2</jackson.version>
         <slf4j.version>1.6.4</slf4j.version>
-        <shiro.version>1.2.1</shiro.version>
-        <apache.tiles.version>3.0.1</apache.tiles.version>
+        <shiro.version>1.2.2</shiro.version>
+        <shiro.stormpath.version>0.6.0-SNAPSHOT</shiro.stormpath.version>
+        <guava.version>14.0.1</guava.version>
+        <servlet.version>3.1.0</servlet.version>
     </properties>
 
     <dependencies>
@@ -32,19 +37,38 @@
         <dependency>
             <groupId>com.stormpath.shiro</groupId>
             <artifactId>stormpath-shiro-core</artifactId>
-            <version>0.2.0</version>
+            <version>${shiro.stormpath.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>${jackson.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.stormpath.sdk</groupId>
             <artifactId>stormpath-sdk-api</artifactId>
-            <version>0.6.0</version>
+            <version>${stormpath.sdk.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.stormpath.sdk</groupId>
+            <artifactId>stormpath-sdk-impl</artifactId>
+            <version>${stormpath.sdk.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.stormpath.sdk</groupId>
             <artifactId>stormpath-sdk-httpclient</artifactId>
-            <version>0.6.0</version>
+            <version>${stormpath.sdk.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.stormpath.sdk</groupId>
+            <artifactId>stormpath-sdk-oauth</artifactId>
+            <version>${stormpath.sdk.version}</version>
             <scope>runtime</scope>
         </dependency>
 
@@ -132,38 +156,16 @@
             <scope>runtime</scope>
         </dependency>
 
-        <!-- JSP dependencies-->
         <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>jstl</artifactId>
-            <version>1.2</version>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${guava.version}</version>
         </dependency>
 
-        <!-- Tiles dependencies -->
         <dependency>
-            <groupId>org.apache.tiles</groupId>
-            <artifactId>tiles-core</artifactId>
-            <version>${apache.tiles.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.tiles</groupId>
-            <artifactId>tiles-api</artifactId>
-            <version>${apache.tiles.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.tiles</groupId>
-            <artifactId>tiles-jsp</artifactId>
-            <version>${apache.tiles.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.tiles</groupId>
-            <artifactId>tiles-servlet</artifactId>
-            <version>${apache.tiles.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.tiles</groupId>
-            <artifactId>tiles-template</artifactId>
-            <version>${apache.tiles.version}</version>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>${servlet.version}</version>
         </dependency>
     </dependencies>
 
@@ -171,17 +173,37 @@
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-war-plugin</artifactId>
-                <version>2.1.1</version>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.0</version>
                 <configuration>
-                    <webXml>src/main/webapp/WEB-INF/web.xml</webXml>
-                    <webResources>
-                        <resource>
-                            <directory>resources</directory>
-                        </resource>
-                    </webResources>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                    <encoding>${project.build.sourceEncoding}</encoding>
                 </configuration>
             </plugin>
         </plugins>
+        <!--plugins>
+            <plugin>
+                <groupId>org.jasig.maven</groupId>
+                <artifactId>sass-maven-plugin</artifactId>
+                <version>1.1.1</version>
+                <configuration>
+                    <sassSourceDirectory>${project.basedir}/src/main/webapp/assets/styles</sassSourceDirectory>
+                    <destination>${project.build.directory}/${project.build.finalName}/assets/styles</destination>
+                    <useCompass>true</useCompass>
+                </configuration>
+
+                <executions>
+                    <execution>
+                        <phase>
+                            process-resources
+                        </phase>
+                        <goals>
+                            <goal>update-stylesheets</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins-->
     </build>
 </project>

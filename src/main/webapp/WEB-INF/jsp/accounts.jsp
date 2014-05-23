@@ -1,5 +1,4 @@
 <%@ page contentType="text/html" language="java" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
 
 <div class="title">This is the list of current application accounts.</div>
@@ -14,14 +13,7 @@
     </tr>
     </thead>
     <tbody>
-    <c:forEach items="${accountList}" var="account">
-        <tr>
-            <td>${account.username}</td>
-            <td>${account.givenName} ${account.surname}</td>
-            <td>${account.email}</td>
-            <td>${account.status}</td>
-        </tr>
-    </c:forEach>
+        <div>hello</div>
     </tbody>
 </table>
 
