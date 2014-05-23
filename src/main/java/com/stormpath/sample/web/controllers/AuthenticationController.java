@@ -4,13 +4,9 @@ import com.stormpath.sample.api.service.AuthenticationService;
 import com.stormpath.sdk.account.Account;
 import com.stormpath.sdk.application.Application;
 import com.stormpath.sdk.authc.ApiAuthenticationResult;
-import com.stormpath.sdk.authc.AuthenticationRequest;
 import com.stormpath.sdk.authc.AuthenticationResult;
 import com.stormpath.sdk.authc.AuthenticationResultVisitor;
-import com.stormpath.sdk.authc.UsernamePasswordRequest;
 import com.stormpath.sdk.client.Client;
-import com.stormpath.sdk.directory.AccountStore;
-import com.stormpath.sdk.directory.Directory;
 import com.stormpath.sdk.oauth.authc.BasicOauthAuthenticationResult;
 import com.stormpath.sdk.oauth.authc.OauthAuthenticationResult;
 import org.apache.shiro.SecurityUtils;
@@ -117,19 +113,11 @@ public class AuthenticationController {
     @RequestMapping(value = "/api/login", method = RequestMethod.POST)
     public void login(HttpServletRequest request, HttpServletResponse response) {
 
-        AccountStore accountStore = client.getResource("http://localhost:8080/v1/directories/5HIkficSxs0BzQzALbLDYr", Directory.class);
-
-        AuthenticationRequest authRequest = new
-                UsernamePasswordRequest("jose+102@stormpath.com", "Abcd1234", accountStore);
-
-
-        Application application = client.getResource("http://localhost:8080/v1/applications/6ZsD79zKX1vfGyjNuwGfi1", Application.class);
-
-        AuthenticationResult result = application.authenticateAccount(authRequest);
+        Application application = client.getResource(applicationRestUrl, Application.class);
 
 //        application.authenticate(request).execute();
 
-//        AuthenticationResult result = application.authenticate(request).execute();
+        AuthenticationResult result = application.authenticate(request).execute();
 
         Assert.isInstanceOf(ApiAuthenticationResult.class, result);
 
