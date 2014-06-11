@@ -13,22 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.stormpath.sample.api.service;
+package com.stormpath.sample.conf;
 
-import org.apache.shiro.authc.AuthenticationException;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 /**
- * @author josebarrueta
- * @since 1.0
+ * @since 1.0.1
  */
-public interface AuthenticationService {
+@Configuration
+public class DispatcherServletConfiguration {
 
-    /**
-     * log in action to validateToken a user.
-     *
-     * @param username
-     * @param password
-     */
-    void authenticate(String username, String password, boolean rememberMe) throws AuthenticationException ;
-
+    @Bean
+    public InternalResourceViewResolver jspViewResolver() {
+        InternalResourceViewResolver bean = new InternalResourceViewResolver();
+        bean.setPrefix("/WEB-INF/jsp/");
+        bean.setSuffix(".jsp");
+        return bean;
+    }
 }

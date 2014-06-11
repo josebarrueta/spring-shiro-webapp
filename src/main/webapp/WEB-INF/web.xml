@@ -45,7 +45,7 @@
 
     <context-param>
         <param-name>contextConfigLocation</param-name>
-        <param-value>com.stormpath.sample.web.configuration.ApplicationConfiguration</param-value>
+        <param-value>com.stormpath.sample.conf.ApplicationConfiguration</param-value>
     </context-param>
 
     <listener>
@@ -64,7 +64,7 @@
 
         <init-param>
             <param-name>contextConfigLocation</param-name>
-            <param-value>com.stormpath.sample.web.configuration.DispatcherServletConfiguration</param-value>
+            <param-value>com.stormpath.sample.conf.DispatcherServletConfiguration</param-value>
         </init-param>
         <load-on-startup>1</load-on-startup>
     </servlet>

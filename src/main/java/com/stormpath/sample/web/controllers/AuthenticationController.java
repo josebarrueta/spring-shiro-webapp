@@ -1,15 +1,35 @@
+/*
+ * Copyright (c) 2014. JLBR
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.stormpath.sample.web.controllers;
 
 import com.stormpath.sample.api.service.AuthenticationService;
 import com.stormpath.sdk.account.Account;
+import com.stormpath.sdk.account.AccountResult;
 import com.stormpath.sdk.application.Application;
 import com.stormpath.sdk.authc.ApiAuthenticationResult;
 import com.stormpath.sdk.authc.AuthenticationResult;
-import com.stormpath.sdk.authc.AuthenticationResultVisitor;
+import com.stormpath.sdk.authc.AuthenticationResultVisitorAdapter;
 import com.stormpath.sdk.client.Client;
-import com.stormpath.sdk.oauth.authc.BasicOauthAuthenticationResult;
+import com.stormpath.sdk.lang.Strings;
+import com.stormpath.sdk.oauth.authc.AccessTokenResult;
 import com.stormpath.sdk.oauth.authc.OauthAuthenticationResult;
+import com.stormpath.sdk.sso.SsoAccountResolver;
+import com.stormpath.sdk.sso.SsoRedirectUrlBuilder;
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,8 +46,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Enumeration;
-import java.util.Map;
 
 /**
  * Controller that supports the authentication URLs for the application.
@@ -65,36 +83,7 @@ public class AuthenticationController {
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
-    public ModelAndView showLogin(HttpServletRequest request) {
-
-
-        Map<String, String[]> parameters = request.getParameterMap();
-
-        for (Map.Entry<String, String[]> entry : parameters.entrySet()) {
-            logger.info("Parameter name: {}", entry.getKey());
-            logger.info("\t value: {}", entry.getValue());
-        }
-
-        Enumeration<String> headerNames = request.getHeaderNames();
-
-        while (headerNames.hasMoreElements()) {
-            String name = headerNames.nextElement();
-            logger.info("Header name: {}", name);
-
-            Enumeration<String> headerValues = request.getHeaders(name);
-            while (headerValues.hasMoreElements()) {
-                logger.info("\tvalue: {}", headerValues.nextElement());
-            }
-
-        }
-        logger.info("method {}", request.getMethod());
-
-        Enumeration<String> attributeNames = request.getAttributeNames();
-
-        while (attributeNames.hasMoreElements()) {
-            String name = attributeNames.nextElement();
-            logger.info("Attribute: {}.", name);
-        }
+    public ModelAndView showLogin() {
 
         Subject currentSubject = SecurityUtils.getSubject();
         if (currentSubject.isAuthenticated() || currentSubject.isRemembered()) {
@@ -103,11 +92,34 @@ public class AuthenticationController {
         return new ModelAndView("login");
     }
 
+    @RequestMapping(value = "/sso/redirect", method = RequestMethod.GET)
+    public void createSsoUrl(HttpServletResponse httpResponse, @RequestParam(value = "state", required = false) String state) {
+        Application application = client.getResource(applicationRestUrl, Application.class);
 
-    @RequestMapping(value = "/api/bearer", method = RequestMethod.POST)
-    public void loginWithBearer(HttpServletRequest request, HttpServletResponse response) {
+        SsoRedirectUrlBuilder urlBuilder = application.createSsoRedirectUrl().setCallbackUri("http://localhost:8088/sso/response");
 
+        if (Strings.hasText(state)) {
+            urlBuilder.setState(state);
+        }
 
+        httpResponse.setStatus(HttpServletResponse.SC_FOUND);
+
+        httpResponse.setHeader("Location", urlBuilder.build());
+    }
+
+    @RequestMapping(value = "/sso/response", method = RequestMethod.GET)
+    public void handleSsoResponse(HttpServletRequest request) {
+
+        Application application = client.getResource(applicationRestUrl, Application.class);
+
+        SsoAccountResolver resolver = application.handleSsoResponse(request);
+
+        AccountResult accountResult = resolver.resolve();
+
+        final Account account = accountResult.getAccount();
+
+        logger.info("Account signed {}.", account.getEmail());
+        logger.info("Account is new: {}, state: {}", accountResult.isNewAccount(), accountResult.getState());
     }
 
     @RequestMapping(value = "/api/login", method = RequestMethod.POST)
@@ -117,7 +129,7 @@ public class AuthenticationController {
 
 //        application.authenticate(request).execute();
 
-        AuthenticationResult result = application.authenticate(request).execute();
+        AuthenticationResult result = application.authenticateApiRequest(request);
 
         Assert.isInstanceOf(ApiAuthenticationResult.class, result);
 
@@ -125,14 +137,13 @@ public class AuthenticationController {
 
         logger.info("Account signed {}", account.getEmail());
 
-
         response.setStatus(HttpServletResponse.SC_OK);
 
         response.setContentType("application/json; charset=utf-8");
 
         final String[] bodyHolder = new String[1];
 
-        result.accept(new AuthenticationResultVisitor() {
+        result.accept(new AuthenticationResultVisitorAdapter() {
             @Override
             public void visit(AuthenticationResult result) {
                 throw new UnsupportedOperationException("visit() method hasn't been implemented.");
@@ -149,11 +160,10 @@ public class AuthenticationController {
             }
 
             @Override
-            public void visit(BasicOauthAuthenticationResult result) {
+            public void visit(AccessTokenResult result) {
                 bodyHolder[0] = result.getTokenResponse().toJson();
             }
         });
-
 
         try (PrintWriter pw = response.getWriter()) {
             pw.print(bodyHolder[0]);
@@ -163,18 +173,18 @@ public class AuthenticationController {
         }
     }
 
-//    @RequestMapping(value = "/login", method = RequestMethod.POST)
-//    public ModelAndView login(@RequestParam("username") String username,
-//                              @RequestParam("password") String password,
-//                              @RequestParam(value = "rememberMe", required = false, defaultValue = "false") String rememberMe) {
-//        try {
-//            authenticationService.authenticate(username, password, "on".equals(rememberMe));
-//        } catch (AuthenticationException e) {
-//            logger.error(String.format("Error occurred while authenticating user. Description [%s].", e.getCause().getMessage()));
-//            return new ModelAndView("redirect:/login");
-//        }
-//        return new ModelAndView("redirect:/home");
-//    }
+    @RequestMapping(value = "/login", method = RequestMethod.POST)
+    public ModelAndView login(@RequestParam("username") String username,
+                              @RequestParam("password") String password,
+                              @RequestParam(value = "rememberMe", required = false, defaultValue = "false") String rememberMe) {
+        try {
+            authenticationService.authenticate(username, password, "on".equals(rememberMe));
+        } catch (AuthenticationException e) {
+            logger.error(String.format("Error occurred while authenticating user. Description [%s].", e.getCause().getMessage()));
+            return new ModelAndView("redirect:/login");
+        }
+        return new ModelAndView("redirect:/home");
+    }
 
     @RequestMapping(value = "/logout", method = RequestMethod.GET)
     public ModelAndView logout() {
