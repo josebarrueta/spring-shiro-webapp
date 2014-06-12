@@ -38,7 +38,8 @@ public class MapToAccountConverter implements Converter<Map, Account> {
     private final MapValueRetriever mapValueRetriever;
 
     @Autowired
-    public MapToAccountConverter(Client stormpathClient, MapValueRetriever mapValueRetriever) {
+    public MapToAccountConverter(Client stormpathClient,
+                                 MapValueRetriever mapValueRetriever) {
         this.mapValueRetriever = mapValueRetriever;
         this.stormpathClient = stormpathClient;
     }

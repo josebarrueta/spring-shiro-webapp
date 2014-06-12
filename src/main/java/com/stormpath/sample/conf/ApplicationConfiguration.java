@@ -17,23 +17,22 @@ package com.stormpath.sample.conf;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import com.stormpath.sample.security.HttpRequestAuthenticationToken;
-import com.stormpath.sample.security.MultiTokenApplicationRealm;
+import com.stormpath.sample.security.SampleApplicationRealm;
 import com.stormpath.sample.web.resolvers.SampleSimpleExceptionResolver;
 import com.stormpath.sdk.account.Account;
 import com.stormpath.sdk.application.Application;
+import com.stormpath.sdk.client.Client;
 import com.stormpath.shiro.realm.ApplicationRealm;
 import com.stormpath.shiro.realm.DefaultGroupRoleResolver;
 import com.stormpath.shiro.realm.GroupRoleResolver;
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authc.AuthenticationToken;
-import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.apache.shiro.web.servlet.AbstractShiroFilter;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -44,7 +43,6 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
 
 /**
  * BeansConfiguration is a Java Configuration file to declare the Spring managed beans.
@@ -54,14 +52,15 @@ import java.util.Set;
 @Configuration
 @ComponentScan("com.stormpath.sample")
 @EnableWebMvc
-@Import({PropertiesConfiguration.class})
+@Import({PropertiesConfiguration.class, StormpathClientConfiguration.class})
 public class ApplicationConfiguration {
 
     @Autowired
     private CacheConfiguration cacheConfiguration;
 
     @Autowired
-    private StormpathClientConfiguration stormpathClientConfiguration;
+    @Qualifier("stormpathClient")
+    private Client stormpathClient;
 
     @Value("${stormpath.application.restUrl}")
     private String applicationRestUrl;
@@ -82,9 +81,8 @@ public class ApplicationConfiguration {
     }
 
     private ApplicationRealm applicationRealm() {
-
-        MultiTokenApplicationRealm realm = new MultiTokenApplicationRealm();
-        realm.setClient(stormpathClientConfiguration.getClient());
+        SampleApplicationRealm realm = new SampleApplicationRealm();
+        realm.setClient(stormpathClient);
         realm.setGroupRoleResolver(groupRoleResolver());
         realm.setApplicationRestUrl(applicationRestUrl);
         realm.setName("ssoRealm");
@@ -94,13 +92,13 @@ public class ApplicationConfiguration {
     @Bean(name = "authenticatedAccountRetriever")
     @Scope("prototype")
     public Account authenticatedAccountRetriever() {
-        return stormpathClientConfiguration.getClient().getResource(SecurityUtils.getSubject().getPrincipal().toString(), Account.class);
+        return stormpathClient.getResource(SecurityUtils.getSubject().getPrincipal().toString(), Account.class);
     }
 
     @Bean(name = "cloudApplication")
     @Scope("prototype")
     public Application cloudApplication() {
-        return stormpathClientConfiguration.getClient().getResource(applicationRestUrl, Application.class);
+        return stormpathClient.getResource(applicationRestUrl, Application.class);
     }
 
     @Bean

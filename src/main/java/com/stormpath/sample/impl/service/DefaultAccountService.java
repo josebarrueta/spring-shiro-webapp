@@ -19,8 +19,6 @@ import com.stormpath.sample.api.service.AccountService;
 import com.stormpath.sdk.account.Account;
 import com.stormpath.sdk.account.AccountList;
 import com.stormpath.sdk.application.Application;
-import com.stormpath.sdk.client.Client;
-import com.stormpath.sdk.lang.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,8 +41,6 @@ public class DefaultAccountService implements AccountService {
 
     private static final Logger logger = LoggerFactory.getLogger(DefaultAccountService.class);
 
-    private final Client stormpathClient;
-
     @Autowired
     private ApplicationContext applicationContext;
 
@@ -55,12 +51,6 @@ public class DefaultAccountService implements AccountService {
 
     public Application getCloudApplication() {
         return applicationContext.getBean("cloudApplication", Application.class);
-    }
-
-    @Autowired
-    public DefaultAccountService(Client stormpathClient) {
-        Assert.notNull(stormpathClient, "getClient is required.");
-        this.stormpathClient = stormpathClient;
     }
 
     @Override

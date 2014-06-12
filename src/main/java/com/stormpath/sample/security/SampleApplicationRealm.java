@@ -1,3 +1,18 @@
+/*
+ * Copyright (c) 2014. JLBR
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.stormpath.sample.security;
 
 import com.google.common.collect.ImmutableSet;
@@ -19,7 +34,7 @@ import java.util.Set;
 /**
  * @since 1.0.1
  */
-public class MultiTokenApplicationRealm extends ApplicationRealm {
+public class SampleApplicationRealm extends ApplicationRealm {
 
     private static final Set<Class<? extends AuthenticationToken>> SUPPORTED_AUTHENTICATION_TOKENS;
 
@@ -32,7 +47,6 @@ public class MultiTokenApplicationRealm extends ApplicationRealm {
 
     @Override
     public boolean supports(AuthenticationToken token) {
-
         if (token == null) {
             return false;
         }
@@ -60,7 +74,7 @@ public class MultiTokenApplicationRealm extends ApplicationRealm {
 
         try {
             accountResult = application.handleSsoResponse(token.getHttpServletRequest()).resolve();
-        } catch (ResourceException | InvalidJwtException e) {
+        } catch (ResourceException | InvalidJwtException | IllegalArgumentException e) {
             String msg = StringUtils.clean(e.getMessage());
             if (msg == null) {
                 msg = "Invalid SSO Request";
