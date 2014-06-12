@@ -17,37 +17,34 @@ package com.stormpath.sample.conf;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import com.stormpath.sample.security.HttpRequestAuthenticationToken;
+import com.stormpath.sample.security.MultiTokenApplicationRealm;
 import com.stormpath.sample.web.resolvers.SampleSimpleExceptionResolver;
 import com.stormpath.sdk.account.Account;
-import com.stormpath.sdk.api.ApiKeys;
 import com.stormpath.sdk.application.Application;
-import com.stormpath.sdk.client.Client;
-import com.stormpath.sdk.client.ClientBuilder;
-import com.stormpath.sdk.client.Clients;
-import com.stormpath.sdk.impl.client.DefaultClientBuilder;
-import com.stormpath.shiro.cache.ShiroCacheManager;
 import com.stormpath.shiro.realm.ApplicationRealm;
 import com.stormpath.shiro.realm.DefaultGroupRoleResolver;
 import com.stormpath.shiro.realm.GroupRoleResolver;
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.cache.CacheManager;
-import org.apache.shiro.cache.MemoryConstrainedCacheManager;
+import org.apache.shiro.authc.AuthenticationToken;
+import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.apache.shiro.web.servlet.AbstractShiroFilter;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Scope;
-import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
 /**
  * BeansConfiguration is a Java Configuration file to declare the Spring managed beans.
@@ -57,49 +54,23 @@ import java.util.Properties;
 @Configuration
 @ComponentScan("com.stormpath.sample")
 @EnableWebMvc
+@Import({PropertiesConfiguration.class})
 public class ApplicationConfiguration {
 
-    @Value("${stormpath.apiKeyFileLocation}")
-    private String apiKeyFileLocation;
+    @Autowired
+    private CacheConfiguration cacheConfiguration;
+
+    @Autowired
+    private StormpathClientConfiguration stormpathClientConfiguration;
 
     @Value("${stormpath.application.restUrl}")
     private String applicationRestUrl;
-
-    @Value("${stormpath.baseurl}")
-    private String stormpathBaseUrl;
-
-    @Bean
-    public static PropertySourcesPlaceholderConfigurer properties() {
-        String propertiesLocation = System.getProperty("defaultProperties.location");
-
-        PropertySourcesPlaceholderConfigurer ppc = new PropertySourcesPlaceholderConfigurer();
-        ppc.setLocation(new FileSystemResource(propertiesLocation));
-        ppc.setIgnoreUnresolvablePlaceholders(true);
-
-        return ppc;
-    }
-
-    @Bean
-    public Client stormpathClient() {
-        ClientBuilder builder = Clients.builder().setApiKey(ApiKeys.builder().setFileLocation(apiKeyFileLocation).build())
-                .setCacheManager(new ShiroCacheManager(cacheManager()));
-
-        if (builder instanceof DefaultClientBuilder) {
-            ((DefaultClientBuilder) builder).setBaseUrl(stormpathBaseUrl);
-        }
-        return builder.build();
-    }
-
-    @Bean
-    public CacheManager cacheManager() {
-        return new MemoryConstrainedCacheManager();
-    }
 
     @Bean
     public DefaultWebSecurityManager securityManager() {
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
         securityManager.setRealm(applicationRealm());
-        securityManager.setCacheManager(cacheManager());
+        securityManager.setCacheManager(cacheConfiguration.cacheManager());
         return securityManager;
     }
 
@@ -110,28 +81,26 @@ public class ApplicationConfiguration {
         return resolver;
     }
 
-    @Bean
-    public ApplicationRealm applicationRealm() {
-        ApplicationRealm realm = new ApplicationRealm();
-        realm.setClient(stormpathClient());
+    private ApplicationRealm applicationRealm() {
+
+        MultiTokenApplicationRealm realm = new MultiTokenApplicationRealm();
+        realm.setClient(stormpathClientConfiguration.getClient());
+        realm.setGroupRoleResolver(groupRoleResolver());
         realm.setApplicationRestUrl(applicationRestUrl);
+        realm.setName("ssoRealm");
         return realm;
     }
 
     @Bean(name = "authenticatedAccountRetriever")
     @Scope("prototype")
     public Account authenticatedAccountRetriever() {
-        return stormpathClient().getResource(SecurityUtils.getSubject().getPrincipal().toString(), Account.class);
+        return stormpathClientConfiguration.getClient().getResource(SecurityUtils.getSubject().getPrincipal().toString(), Account.class);
     }
-
 
     @Bean(name = "cloudApplication")
     @Scope("prototype")
     public Application cloudApplication() {
-
-        Client client = stormpathClient();
-
-        return client.getResource(applicationRestUrl, Application.class);
+        return stormpathClientConfiguration.getClient().getResource(applicationRestUrl, Application.class);
     }
 
     @Bean
@@ -149,7 +118,7 @@ public class ApplicationConfiguration {
                 .put("/favicon.ico", "anon")
                 .put("/login", "anon")
                 .put("/sso/redirect", "anon")
-                .put("/sso/request", "anon")
+                .put("/sso/response", "anon")
                 .put("/api/login", "anon")
                 .put("/authorization/google", "anon")
                 .put("/signup", "anon")

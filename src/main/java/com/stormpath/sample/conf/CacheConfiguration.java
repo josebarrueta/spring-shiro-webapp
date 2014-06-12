@@ -13,31 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.stormpath.sample.api.service;
+package com.stormpath.sample.conf;
 
-import org.apache.shiro.authc.AuthenticationException;
-
-import javax.servlet.http.HttpServletRequest;
+import org.apache.shiro.cache.CacheManager;
+import org.apache.shiro.cache.MemoryConstrainedCacheManager;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 /**
- * @author josebarrueta
- * @since 1.0
+ * @since 1.0.1
  */
-public interface AuthenticationService {
+@Configuration
+public class CacheConfiguration {
 
-    /**
-     * log in action to validateToken a user.
-     *
-     * @param username
-     * @param password
-     */
-    void authenticate(String username, String password, boolean rememberMe) throws AuthenticationException;
-
-
-    /**
-     *
-     * @param httpServletRequest
-     */
-    void resolveSsoIdentity(HttpServletRequest httpServletRequest);
+    @Bean
+    public CacheManager cacheManager() {
+        return new MemoryConstrainedCacheManager();
+    }
 
 }

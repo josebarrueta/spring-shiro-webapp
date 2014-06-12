@@ -166,6 +166,7 @@
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
             <version>${servlet.version}</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 
@@ -182,28 +183,5 @@
                 </configuration>
             </plugin>
         </plugins>
-        <!--plugins>
-            <plugin>
-                <groupId>org.jasig.maven</groupId>
-                <artifactId>sass-maven-plugin</artifactId>
-                <version>1.1.1</version>
-                <configuration>
-                    <sassSourceDirectory>${project.basedir}/src/main/webapp/assets/styles</sassSourceDirectory>
-                    <destination>${project.build.directory}/${project.build.finalName}/assets/styles</destination>
-                    <useCompass>true</useCompass>
-                </configuration>
-
-                <executions>
-                    <execution>
-                        <phase>
-                            process-resources
-                        </phase>
-                        <goals>
-                            <goal>update-stylesheets</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins-->
     </build>
 </project>

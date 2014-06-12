@@ -35,32 +35,32 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping(value = "/admin")
 public class AdminController {
 
-    private final String[] CONCAT_CHAR = {"a", "b", "c", "d", "e", "f","g", "h", "i", "j","k", "l", "m","n","o","p","q","r","s","t","u","v"};
+    private final String[] CONCAT_CHAR = {"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v"};
 
     @Autowired
     private AccountService accountService;
 
     @RequestMapping(value = "/createUser", method = RequestMethod.GET)
     @RequiresRoles(value = "admin")
-    public ModelAndView showCreateUser(){
+    public ModelAndView showCreateUser() {
         return new ModelAndView("createUser");
     }
 
     @RequestMapping(value = "/createUser", method = RequestMethod.POST)
     @RequiresRoles(value = "admin")
-    public ModelAndView createUser(@ModelAttribute("account") DefaultAccount account){
+    public ModelAndView createUser(@ModelAttribute("account") DefaultAccount account) {
 
         String username = account.getUsername();
         String givenName = account.getGivenName();
         String lastName = account.getGivenName();
 
-        for(int i = 0; i < 1; i++){
+        for (int i = 0; i < 1; i++) {
 
             StringBuilder email = new StringBuilder(username);
             email.append(CONCAT_CHAR[i]);
             email.append("@yopmail.com");
 
-            account.setUsername(username +  CONCAT_CHAR[i]);
+            account.setUsername(username + CONCAT_CHAR[i]);
             account.setEmail(email.toString());
 
             account.setGivenName(givenName + CONCAT_CHAR[i]);
@@ -70,11 +70,5 @@ public class AdminController {
 
         }
         return new ModelAndView("redirect:/accounts");
-    }
-
-    @RequestMapping(value = ".", method = RequestMethod.POST)
-    public ModelAndView createApplication(@RequestParam String applicationName){
-       return null;
-
     }
 }

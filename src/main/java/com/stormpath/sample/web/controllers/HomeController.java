@@ -17,10 +17,8 @@ package com.stormpath.sample.web.controllers;
 
 import com.stormpath.sample.api.service.AccountService;
 import com.stormpath.sdk.account.Account;
-import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresRoles;
-import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,19 +60,11 @@ public class HomeController {
     @RequestMapping(value = "/home", method = RequestMethod.GET)
     @RequiresRoles(value = {"user"})
     public ModelAndView getHome() {
-        Subject currentUser = SecurityUtils.getSubject();
-        if (currentUser.isAuthenticated() || currentUser.isRemembered()) {
-            logger.info("home - current user info {}", currentUser.getPrincipal().toString());
+        Account account = accountService.getAuthenticatedAccount();
 
-            Account account = accountService.getAuthenticatedAccount();
-
-            Map<String, Object> model = new HashMap<>();
-            model.put("account", account);
-            return new ModelAndView("home", model);
-        } else {
-            logger.error("Not authenticated user tried to access home page.");
-            return new ModelAndView("redirect:/login");
-        }
+        Map<String, Object> model = new HashMap<>();
+        model.put("account", account);
+        return new ModelAndView("home", model);
     }
 
     /**

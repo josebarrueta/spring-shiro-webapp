@@ -17,16 +17,16 @@ package com.stormpath.sample.web.controllers;
 
 import com.stormpath.sample.api.service.AuthenticationService;
 import com.stormpath.sdk.account.Account;
-import com.stormpath.sdk.account.AccountResult;
 import com.stormpath.sdk.application.Application;
 import com.stormpath.sdk.authc.ApiAuthenticationResult;
 import com.stormpath.sdk.authc.AuthenticationResult;
 import com.stormpath.sdk.authc.AuthenticationResultVisitorAdapter;
-import com.stormpath.sdk.client.Client;
+import com.stormpath.sdk.group.Group;
+import com.stormpath.sdk.group.GroupList;
+import com.stormpath.sdk.group.Groups;
 import com.stormpath.sdk.lang.Strings;
 import com.stormpath.sdk.oauth.authc.AccessTokenResult;
 import com.stormpath.sdk.oauth.authc.OauthAuthenticationResult;
-import com.stormpath.sdk.sso.SsoAccountResolver;
 import com.stormpath.sdk.sso.SsoRedirectUrlBuilder;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
@@ -34,7 +34,6 @@ import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -42,10 +41,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Iterator;
 
 /**
  * Controller that supports the authentication URLs for the application.
@@ -59,16 +60,25 @@ public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
 
-    @Value("${stormpath.application.restUrl}")
-    private String applicationRestUrl;
-
     @Autowired
-    private Client client;
+    private Application cloudApplication;
+
+    private Group userGroup;
 
     @Autowired
     public AuthenticationController(AuthenticationService authenticationService) {
         Assert.notNull(authenticationService, "authenticationService cannot be null.");
         this.authenticationService = authenticationService;
+    }
+
+    @PostConstruct
+    public void initGroup() {
+        GroupList groups = cloudApplication.getGroups(Groups.where(Groups.name().eqIgnoreCase("user")));
+        for (Iterator<Group> groupIterator = groups.iterator(); groupIterator.hasNext(); ) {
+            userGroup = groupIterator.next();
+            break;
+        }
+        Assert.notNull(userGroup, "couldn't find user group.");
     }
 
 
@@ -79,6 +89,7 @@ public class AuthenticationController {
         if (currentSubject.isAuthenticated() || currentSubject.isRemembered()) {
             currentSubject.logout();
         }
+
         return new ModelAndView("redirect:/home");
     }
 
@@ -94,9 +105,8 @@ public class AuthenticationController {
 
     @RequestMapping(value = "/sso/redirect", method = RequestMethod.GET)
     public void createSsoUrl(HttpServletResponse httpResponse, @RequestParam(value = "state", required = false) String state) {
-        Application application = client.getResource(applicationRestUrl, Application.class);
 
-        SsoRedirectUrlBuilder urlBuilder = application.createSsoRedirectUrl().setCallbackUri("http://localhost:8088/sso/response");
+        SsoRedirectUrlBuilder urlBuilder = cloudApplication.createSsoRedirectUrl().setCallbackUri("http://localhost:8088/sso/response");
 
         if (Strings.hasText(state)) {
             urlBuilder.setState(state);
@@ -108,28 +118,17 @@ public class AuthenticationController {
     }
 
     @RequestMapping(value = "/sso/response", method = RequestMethod.GET)
-    public void handleSsoResponse(HttpServletRequest request) {
+    public ModelAndView handleSsoResponse(HttpServletRequest request) {
 
-        Application application = client.getResource(applicationRestUrl, Application.class);
+        authenticationService.resolveSsoIdentity(request);
 
-        SsoAccountResolver resolver = application.handleSsoResponse(request);
-
-        AccountResult accountResult = resolver.resolve();
-
-        final Account account = accountResult.getAccount();
-
-        logger.info("Account signed {}.", account.getEmail());
-        logger.info("Account is new: {}, state: {}", accountResult.isNewAccount(), accountResult.getState());
+        return new ModelAndView("redirect:/home");
     }
 
     @RequestMapping(value = "/api/login", method = RequestMethod.POST)
     public void login(HttpServletRequest request, HttpServletResponse response) {
 
-        Application application = client.getResource(applicationRestUrl, Application.class);
-
-//        application.authenticate(request).execute();
-
-        AuthenticationResult result = application.authenticateApiRequest(request);
+        AuthenticationResult result = cloudApplication.authenticateApiRequest(request);
 
         Assert.isInstanceOf(ApiAuthenticationResult.class, result);
 
@@ -201,5 +200,4 @@ public class AuthenticationController {
     public ModelAndView unauthorized() {
         return new ModelAndView("error403");
     }
-
 }

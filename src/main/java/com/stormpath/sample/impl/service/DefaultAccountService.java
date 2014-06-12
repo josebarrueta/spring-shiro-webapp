@@ -59,7 +59,7 @@ public class DefaultAccountService implements AccountService {
 
     @Autowired
     public DefaultAccountService(Client stormpathClient) {
-        Assert.notNull(stormpathClient, "stormpathClient is required.");
+        Assert.notNull(stormpathClient, "getClient is required.");
         this.stormpathClient = stormpathClient;
     }
 
@@ -91,13 +91,7 @@ public class DefaultAccountService implements AccountService {
         if (accountList != null) {
             accountsToRetrieve = new ArrayList<>();
             for (Account acct : accountList) {
-                Account dfAcct = stormpathClient.getDataStore().instantiate(Account.class);
-                dfAcct.setEmail(acct.getEmail());
-                dfAcct.setGivenName(acct.getGivenName());
-                dfAcct.setUsername(acct.getUsername());
-                dfAcct.setSurname(acct.getSurname());
-                dfAcct.setStatus(dfAcct.getStatus());
-                accountsToRetrieve.add(dfAcct);
+                accountsToRetrieve.add(acct);
             }
         } else {
             accountsToRetrieve = Collections.emptyList();
