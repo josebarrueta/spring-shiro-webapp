@@ -73,7 +73,7 @@ public class SampleApplicationRealm extends ApplicationRealm {
         AccountResult accountResult;
 
         try {
-            accountResult = application.handleSsoResponse(token.getHttpServletRequest()).resolve();
+            accountResult = application.handleSsoResponse(token.getHttpServletRequest()).execute();
         } catch (ResourceException | InvalidJwtException | IllegalArgumentException e) {
             String msg = StringUtils.clean(e.getMessage());
             if (msg == null) {
