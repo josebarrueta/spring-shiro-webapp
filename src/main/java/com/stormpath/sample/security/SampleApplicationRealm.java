@@ -16,9 +16,9 @@
 package com.stormpath.sample.security;
 
 import com.google.common.collect.ImmutableSet;
-import com.stormpath.sdk.account.AccountResult;
 import com.stormpath.sdk.application.Application;
 import com.stormpath.sdk.error.jwt.InvalidJwtException;
+import com.stormpath.sdk.idsite.AccountResult;
 import com.stormpath.sdk.resource.ResourceException;
 import com.stormpath.shiro.realm.ApplicationRealm;
 import org.apache.shiro.authc.AuthenticationException;
@@ -73,7 +73,7 @@ public class SampleApplicationRealm extends ApplicationRealm {
         AccountResult accountResult;
 
         try {
-            accountResult = application.handleSsoResponse(token.getHttpServletRequest()).execute();
+            accountResult = application.newIdSiteCallbackHandler(token.getHttpServletRequest()).getAccountResult();
         } catch (ResourceException | InvalidJwtException | IllegalArgumentException e) {
             String msg = StringUtils.clean(e.getMessage());
             if (msg == null) {

@@ -38,6 +38,6 @@ public interface AuthenticationService {
      *
      * @param httpServletRequest
      */
-    void resolveSsoIdentity(HttpServletRequest httpServletRequest);
+    void resolveIdentity(HttpServletRequest httpServletRequest);
 
 }

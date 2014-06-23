@@ -17,17 +17,17 @@ package com.stormpath.sample.web.controllers;
 
 import com.stormpath.sample.api.service.AuthenticationService;
 import com.stormpath.sdk.account.Account;
+import com.stormpath.sdk.api.ApiAuthenticationResult;
 import com.stormpath.sdk.application.Application;
-import com.stormpath.sdk.authc.ApiAuthenticationResult;
 import com.stormpath.sdk.authc.AuthenticationResult;
 import com.stormpath.sdk.authc.AuthenticationResultVisitorAdapter;
 import com.stormpath.sdk.group.Group;
 import com.stormpath.sdk.group.GroupList;
 import com.stormpath.sdk.group.Groups;
+import com.stormpath.sdk.idsite.IdSiteUrlBuilder;
 import com.stormpath.sdk.lang.Strings;
-import com.stormpath.sdk.oauth.authc.AccessTokenResult;
-import com.stormpath.sdk.oauth.authc.OauthAuthenticationResult;
-import com.stormpath.sdk.sso.SsoRedirectUrlBuilder;
+import com.stormpath.sdk.oauth.AccessTokenResult;
+import com.stormpath.sdk.oauth.OauthAuthenticationResult;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.subject.Subject;
@@ -106,7 +106,7 @@ public class AuthenticationController {
     @RequestMapping(value = "/sso/redirect", method = RequestMethod.GET)
     public void createSsoUrl(HttpServletResponse httpResponse, @RequestParam(value = "state", required = false) String state) {
 
-        SsoRedirectUrlBuilder urlBuilder = cloudApplication.createSsoRedirectUrl().setCallbackUri("http://localhost:8088/sso/response");
+        IdSiteUrlBuilder urlBuilder = cloudApplication.newIdSiteUrlBuilder().setCallbackUri("http://localhost:8088/sso/response");
 
         if (Strings.hasText(state)) {
             urlBuilder.setState(state);
@@ -120,7 +120,7 @@ public class AuthenticationController {
     @RequestMapping(value = "/sso/response", method = RequestMethod.GET)
     public ModelAndView handleSsoResponse(HttpServletRequest request) {
 
-        authenticationService.resolveSsoIdentity(request);
+        authenticationService.resolveIdentity(request);
 
         return new ModelAndView("redirect:/home");
     }

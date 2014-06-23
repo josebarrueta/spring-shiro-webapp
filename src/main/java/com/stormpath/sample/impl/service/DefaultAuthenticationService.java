@@ -72,7 +72,7 @@ public class DefaultAuthenticationService implements AuthenticationService {
     }
 
     @Override
-    public void resolveSsoIdentity(HttpServletRequest httpServletRequest) {
+    public void resolveIdentity(HttpServletRequest httpServletRequest) {
         Assert.notNull(httpServletRequest);
 
         Subject currentUser = SecurityUtils.getSubject();

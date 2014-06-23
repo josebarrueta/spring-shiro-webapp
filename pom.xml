@@ -23,7 +23,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <org.springframework.version>4.0.5.RELEASE</org.springframework.version>
-        <stormpath.sdk.version>1.0.RC-SNAPSHOT</stormpath.sdk.version>
+        <stormpath.sdk.version>1.0.RC2-SNAPSHOT</stormpath.sdk.version>
         <jackson.version>2.3.2</jackson.version>
         <slf4j.version>1.6.4</slf4j.version>
         <shiro.version>1.2.2</shiro.version>
