@@ -128,9 +128,7 @@ public class AuthenticationController {
     @RequestMapping(value = "/api/login", method = RequestMethod.POST)
     public void login(HttpServletRequest request, HttpServletResponse response) {
 
-        AuthenticationResult result = cloudApplication.authenticateApiRequest(request);
-
-        Assert.isInstanceOf(ApiAuthenticationResult.class, result);
+        ApiAuthenticationResult result = cloudApplication.authenticateApiRequest(request);
 
         final Account account = result.getAccount();
 
