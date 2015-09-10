@@ -23,10 +23,10 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <org.springframework.version>4.0.5.RELEASE</org.springframework.version>
-        <stormpath.sdk.version>1.0.RC2.1</stormpath.sdk.version>
-        <jackson.version>2.3.2</jackson.version>
+        <stormpath.sdk.version>1.0.RC4.6-SNAPSHOT</stormpath.sdk.version>
+        <jackson.version>2.4.4</jackson.version>
         <slf4j.version>1.6.4</slf4j.version>
-        <shiro.version>1.2.2</shiro.version>
+        <shiro.version>1.2.3</shiro.version>
         <shiro.stormpath.version>0.6.0</shiro.stormpath.version>
         <guava.version>14.0.1</guava.version>
         <servlet.version>3.1.0</servlet.version>

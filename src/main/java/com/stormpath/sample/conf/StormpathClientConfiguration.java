@@ -4,7 +4,6 @@ import com.stormpath.sdk.api.ApiKeys;
 import com.stormpath.sdk.client.Client;
 import com.stormpath.sdk.client.ClientBuilder;
 import com.stormpath.sdk.client.Clients;
-import com.stormpath.sdk.impl.client.DefaultClientBuilder;
 import com.stormpath.shiro.cache.ShiroCacheManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,6 +31,7 @@ public class StormpathClientConfiguration {
     @Bean(name = "stormpathClient")
     @Profile({"default", "production"})
     public Client getClient() {
+
         ClientBuilder builder = Clients.builder().setApiKey(ApiKeys.builder().setFileLocation(apiKeyFileLocation).build())
                 .setCacheManager(new ShiroCacheManager(cacheConfiguration.cacheManager()));
 
@@ -44,9 +44,8 @@ public class StormpathClientConfiguration {
         ClientBuilder builder = Clients.builder().setApiKey(ApiKeys.builder().setFileLocation(apiKeyFileLocation).build())
                 .setCacheManager(new ShiroCacheManager(cacheConfiguration.cacheManager()));
 
-        if (builder instanceof DefaultClientBuilder) {
-            ((DefaultClientBuilder) builder).setBaseUrl(stormpathBaseUrl);
-        }
+        builder.setBaseUrl(stormpathBaseUrl);
+
         return builder.build();
     }
 }

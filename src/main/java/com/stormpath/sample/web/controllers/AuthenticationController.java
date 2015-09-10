@@ -28,6 +28,10 @@ import com.stormpath.sdk.idsite.IdSiteUrlBuilder;
 import com.stormpath.sdk.lang.Strings;
 import com.stormpath.sdk.oauth.AccessTokenResult;
 import com.stormpath.sdk.oauth.OauthAuthenticationResult;
+import com.stormpath.sdk.oauth.ScopeFactory;
+import com.stormpath.sdk.provider.ProviderAccountRequest;
+import com.stormpath.sdk.provider.ProviderAccountResult;
+import com.stormpath.sdk.provider.Providers;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.subject.Subject;
@@ -46,7 +50,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Iterator;
+import java.util.Collections;
 
 /**
  * Controller that supports the authentication URLs for the application.
@@ -63,23 +67,21 @@ public class AuthenticationController {
     @Autowired
     private Application cloudApplication;
 
-    private Group userGroup;
-
     @Autowired
     public AuthenticationController(AuthenticationService authenticationService) {
         Assert.notNull(authenticationService, "authenticationService cannot be null.");
         this.authenticationService = authenticationService;
     }
 
-    @PostConstruct
-    public void initGroup() {
-        GroupList groups = cloudApplication.getGroups(Groups.where(Groups.name().eqIgnoreCase("user")));
-        for (Iterator<Group> groupIterator = groups.iterator(); groupIterator.hasNext(); ) {
-            userGroup = groupIterator.next();
-            break;
-        }
-        Assert.notNull(userGroup, "couldn't find user group.");
-    }
+//    @PostConstruct
+//    public void initGroup() {
+//        GroupList groups = cloudApplication.getGroups(Groups.where(Groups.name().eqIgnoreCase("user")));
+//        for (Iterator<Group> groupIterator = groups.iterator(); groupIterator.hasNext(); ) {
+//            userGroup = groupIterator.next();
+//            break;
+//        }
+////        Assert.notNull(userGroup, "couldn't find user group.");
+//    }
 
 
     @RequestMapping(value = "/authorization/google", method = RequestMethod.GET)
@@ -90,6 +92,21 @@ public class AuthenticationController {
             currentSubject.logout();
         }
 
+        ProviderAccountRequest request = Providers.GOOGLE.account().setCode(code).build();
+
+        ProviderAccountResult result = cloudApplication.getAccount(request);
+
+
+        return new ModelAndView("redirect:/home");
+    }
+
+    @RequestMapping(value = "/authorization/linkedin", method = RequestMethod.GET)
+    public ModelAndView authorizeLinkedIn(@RequestParam(value = "code", required = true) String code) {
+        logger.info("The code sent by LinkedIn is {}", code);
+        Subject currentSubject = SecurityUtils.getSubject();
+        if (currentSubject.isAuthenticated() || currentSubject.isRemembered()) {
+            currentSubject.logout();
+        }
         return new ModelAndView("redirect:/home");
     }
 
@@ -106,7 +123,8 @@ public class AuthenticationController {
     @RequestMapping(value = "/sso/redirect", method = RequestMethod.GET)
     public void createSsoUrl(HttpServletResponse httpResponse, @RequestParam(value = "state", required = false) String state) {
 
-        IdSiteUrlBuilder urlBuilder = cloudApplication.newIdSiteUrlBuilder().setCallbackUri("http://localhost:8088/sso/response");
+        IdSiteUrlBuilder urlBuilder = cloudApplication.newIdSiteUrlBuilder().setCallbackUri("http://localhost:8088/sso/response")
+                .setOrganizationNameKey("blue-moon").setShowOrganizationField(true);
 
         if (Strings.hasText(state)) {
             urlBuilder.setState(state);
@@ -128,7 +146,9 @@ public class AuthenticationController {
     @RequestMapping(value = "/api/login", method = RequestMethod.POST)
     public void login(HttpServletRequest request, HttpServletResponse response) {
 
-        ApiAuthenticationResult result = cloudApplication.authenticateApiRequest(request);
+        ScopeFactory factory = (result, requestedScopes) -> Collections.emptySet();
+
+        ApiAuthenticationResult result = cloudApplication.authenticateOauthRequest(request).execute();
 
         final Account account = result.getAccount();
 

@@ -58,7 +58,6 @@ public class HomeController {
      * @return
      */
     @RequestMapping(value = "/home", method = RequestMethod.GET)
-    @RequiresRoles(value = {"user"})
     public ModelAndView getHome() {
         Account account = accountService.getAuthenticatedAccount();
 

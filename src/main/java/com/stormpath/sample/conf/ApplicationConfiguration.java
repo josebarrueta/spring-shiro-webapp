@@ -43,6 +43,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
 /**
  * BeansConfiguration is a Java Configuration file to declare the Spring managed beans.
@@ -119,12 +120,22 @@ public class ApplicationConfiguration {
                 .put("/sso/response", "anon")
                 .put("/api/login", "anon")
                 .put("/authorization/google", "anon")
+                .put("/authorization/linkedin", "anon")
                 .put("/signup", "anon")
                 .put("/admin/**", "authc")
                 .put("/home", "authc")
                 .put("/logout", "logout")
                 .put("/**", "authc");
         return mapBuilder.build();
+    }
+
+    @Bean
+    public Set<String> availableScopes() {
+
+        ImmutableSet.Builder<String> scopesBuilder = new ImmutableSet.Builder<String>()
+                .add("this");
+
+        return scopesBuilder.build();
     }
 
     @Bean
